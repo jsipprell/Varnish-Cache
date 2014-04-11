@@ -516,9 +516,17 @@ VCLS_Poll(struct VCLS *cs, int timeout)
 		}
 		assert(i == cs->nfd);
 
-		j = poll(pfd, cs->nfd, timeout);
-		if (j <= 0)
-			return (j);
+		j = 0;
+		while (!j) {
+			j = poll(pfd, cs->nfd, timeout);
+			if(j == -1 && errno == EINTR) {
+				j = 0;
+				continue;
+			}
+
+			if (j <= 0)
+				return (j);
+		}
 		i = 0;
 		VTAILQ_FOREACH_SAFE(cfd, &cs->fds, list, cfd2) {
 			assert(pfd[i].fd == cfd->fdi);
