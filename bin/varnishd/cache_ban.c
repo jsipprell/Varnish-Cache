@@ -319,8 +319,12 @@ BAN_AddTest(struct cli *cli, struct ban *b, const char *a1, const char *a2,
 		return (-1);
 	}
 
-	if (pv->flag & PVAR_REQ)
-		b->flags |= BAN_F_REQ;
+	if (pv->flag & PVAR_REQ) {
+		// b->flags |= BAN_F_REQ;
+		VCLI_Out(cli, "banning via \"%s\" object is disabled", a1);
+		VCLI_SetResult(cli, CLIS_PARAM);
+		return (-1);
+	}
 
 	VSB_putc(b->vsb, pv->tag);
 	if (pv->flag & PVAR_HTTP)
