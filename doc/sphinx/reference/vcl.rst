@@ -522,11 +522,6 @@ vcl_pass
   pass
     Proceed with pass mode.
 
-  restart
-    Restart the transaction. Increases the restart counter. If the number 
-    of restarts is higher than *max_restarts* varnish emits a guru meditation 
-    error.
-
 vcl_hash
   You may call hash_data() on the data you would like to add to the hash.
   
@@ -764,6 +759,11 @@ req.esi_level
 
 req.grace
   Set to a period to enable grace.
+
+  Known limitation in 3.0: Disabling grace by setting req.grace or beresp.grace
+  to 0s does not have the desired effect, but will rather set the grace time to
+  the value of default_grace. To disable grace for a request, either set
+  parameter default_grace = 0s or set req.grace = 0.000001s in VCL.
 
 req.xid
   Unique ID of this request.
